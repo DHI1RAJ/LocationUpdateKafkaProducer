@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Delivery Tracker | Real-Time Location</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    function sendStaticLocation() {
+      const location = {
+        latitude: parseFloat(document.getElementById("lat").value),
+        longitude: parseFloat(document.getElementById("lon").value)
+      };
+
+      fetch("/location/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(location)
+      }).then(() => {
+        showPopup("📍 Location Updated Successfully");
+      });
+    }
+
+    function fetchUserDetails() {
+      fetch("/location/track/data")
+        .then(response => response.json())
+        .then(data => {
+          const userDetails = document.getElementById("userDetails");
+          userDetails.style.display = "block";
+          userDetails.innerHTML = `
+            <h3>Current Location</h3>
+            <div class="details-card">
+              <p><strong>Latitude:</strong> ${data.latitude}</p>
+              <p><strong>Longitude:</strong> ${data.longitude}</p>
+            </div>
+          `;
+          showPopup("📡 Delivery Location Fetched");
+        })
+        .catch(error => {
+          console.error("Error fetching user data:", error);
+        });
+    }
+
+    function showPopup(message) {
+      const popup = document.getElementById("popup");
+      const overlay = document.getElementById("overlay");
+      popup.innerHTML = `<p>${message}</p>`;
+      overlay.style.display = "block";
+      popup.style.display = "block";
+      setTimeout(() => {
+        overlay.style.display = "none";
+        popup.style.display = "none";
+      }, 2000);
+    }
+  </script>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+    <h1>📦 Delivery Tracker</h1>
+    <p>Update or Track Real-Time Delivery Location</p>
+
+    <div class="form-group">
+      <input type="text" id="lat" placeholder="Latitude (e.g., 28.7041)" value="28.7041">
+      <input type="text" id="lon" placeholder="Longitude (e.g., 77.1025)" value="77.1025">
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-send" onclick="sendStaticLocation()">Update Location</button>
+      <button class="btn btn-track" onclick="fetchUserDetails()">Track Location</button>
+    </div>
+
+    <div id="userDetails"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="popup" id="popup"></div>
+</body>
+</html>
