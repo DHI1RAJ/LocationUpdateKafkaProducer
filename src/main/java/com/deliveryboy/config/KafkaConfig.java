@@ -10,12 +10,10 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic topic() {
-
         return TopicBuilder
                 .name(AppConstants.LOCATION_TOPIC_NAME)
-//                .partitions()
-//                .replicas()
+                .partitions(1)
+                .replicas(1)
                 .build();
-
     }
 }
