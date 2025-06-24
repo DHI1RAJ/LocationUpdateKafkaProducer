@@ -27,6 +27,6 @@ public class LocationController {
     @ResponseBody
     public ResponseEntity<?> updateLocation(@RequestBody Location location) {
         kafkaService.updateLocation(location);
-        return ResponseEntity.ok(Map.of("message", "Location updated successfully"));
+        return ResponseEntity.ok(Map.of("message", "Location updated successfully---"));
     }
 }
